@@ -5,22 +5,28 @@
         this.gameMap.load();
         this.rootScene.attach(this.gameMap);
 
-        this.pic = new Framework.Sprite(define.imagePath + 'goshit.jpg');
+
+        this.position = {
+            x: 100,
+            y: 100
+        }
+        this.rotation = 0;
+
+        this.pic = new Framework.Sprite(define.imagePath + 'firststage.png');
         this.pic.position = {
             x: 100,
             y: 100
         };
         this.rootScene.attach(this.pic);
 
-
-        this.pic2 = new Framework.Sprite(define.imagePath + 'goshit2.jpg');
+/*
+        this.pic2 = new Framework.Sprite(define.imagePath + 'shit.bmp');
         this.pic2.position = {
-            x: 900,
-            y: 900
+            x: 800,
+            y: 800
         };
         this.rootScene.attach(this.pic2);
-
-
+*/
 
         var characterPosition;
 
@@ -107,6 +113,12 @@
             y: 100
         }
         this.rotation = 0;
+
+        //
+        this.practice = new Practice();
+        this.practice.load();
+        this.rootScene.attach(this.practice.pic);  
+
     },
 
     initialize: function () {
@@ -117,6 +129,15 @@
     update: function () {
         var game = this;
         this.rootScene.update();
+        //
+        this.practice.update();
+        this.gameMap.update();
+        
+
+        this.position.x ++;
+        this.rotation ++;
+        this.pic.position = this.position;
+        this.pic.rotation = this.rotation;
 
         //以下為當被攻擊時會停下來, 並且當被攻擊的動畫播放完時便繼續跑的Scenario
         if (this.firen.collide(this.freeze) && !this.isStop && !this.isPlayed) {
@@ -146,12 +167,15 @@
 
 
         this.isPlayHit = this.firen.collide(this.freeze)
+
+
+
     },
 
     draw: function (parentCtx) {
 
         this.pic.draw();
-        this.pic2.draw();
+        //this.pic2.draw();
 
         this.rootScene.draw();
         //可支援畫各種單純的圖形和字
@@ -207,6 +231,7 @@
     click: function (e) {
 
         console.log(e.x, e.y);
+        console.log("stop");
         if (!this.rectPosition) {
             return;
         }

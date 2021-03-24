@@ -1,3 +1,4 @@
+
 var GameMap = function () {
     this.MW = 70;
     this.MH = 40;
@@ -11,11 +12,11 @@ var GameMap = function () {
     this.map = [[1, 2, 1, 2], [2, 1, 2, 1], [0, 1, 0, 1], [2, 0, 2, 0], [1, 2, 1, 2]];
 
     this.load = function () {
-        this.greenPic = new Framework.Sprite(define.imagePath + 'goshit.jpg');
-        this.bluePic = new Framework.Sprite(define.imagePath + 'goshit2.jpg');
+        this.greenPic = new Framework.Sprite(define.imagePath + 'green.png');
+        this.bluePic = new Framework.Sprite(define.imagePath + 'blue.png');
     };
 
-    this.initialize() = function () {
+    this.initialize = function () {
 
     };
 
@@ -27,8 +28,8 @@ var GameMap = function () {
         for (i = 0; i < 5; i++) {
             for (j = 0; j < 4; j++) {
                 var picPosition = {
-                    x: this.position.x + (this.MW * j) + this.MW / 2;
-                    y: this.position.y + (this.MH * i) + this.MH / 2;
+                    x: this.position.x + (this.MW * j) + this.MW / 2,
+                    y: this.position.y + (this.MH * i) + this.MH / 2,
                 }
 
                 switch (this.map[i][j]) {
