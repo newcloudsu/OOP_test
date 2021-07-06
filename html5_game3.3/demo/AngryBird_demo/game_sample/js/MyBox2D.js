@@ -2,13 +2,9 @@ var MyBox2D = Framework.Class(Framework.Level, {
 	load : function () {
 		console.log('load function');
 
-		this.angryBird = new angryBird();
-		this.angryBird.init( 'hero.png', this.box2D );
-		this.angryBird.position = {
-			x : 180,
-			y : 100
-		};
-		
+		this.box2D = new Framework.Box2D();
+		this.box2D.createWorld();
+		this.box2D.setContactListener();
 
 		this.box2D = new Framework.Box2D();
 		this.box2D.createWorld();
@@ -19,9 +15,38 @@ var MyBox2D = Framework.Class(Framework.Level, {
 			y : 450
 		};
 
+		this.angryBird = new angryBird();
+		this.angryBird.init( 'hero.png', this.box2D );
+		this.angryBird.position = {
+			x : 180,
+			y : 100
+		};
 
-		var ground = this.box2D.createSquareBody(1000,1.0,this.box2D.bodyType_Static);
+		this.sensor = new sensor();
+		this.sensor.init( 'sensor.png', this.box2D );
+		this.sensor.position = {
+			x : 500,
+			y : 300
+		};
+		this.sensor.isSensor = true;
+		
+		var ground = this.box2D.createSquareBody(1000,1.0,this.box2D.bodyType_Static); // bodyType_Static
 		ground.SetPosition(new this.box2D.b2Vec2(0,24));
+
+		this.monstersValue = [
+			{ x : 1000, y : 550 },
+			{ x : 700, y : 550 }
+		];
+		this.monsters = new Array();
+		for(var i=0; i<this.monstersValue.length; i++){
+			this.monsters[i] = new monster();
+			this.monsters[i].init('monster.png', this.box2D);
+			this.monsters[i].position = {
+				x: this.monstersValue[i].x,
+				y: this.monstersValue[i].y
+			};
+		}
+
 
 		this.wallsValue = [
 			{x: 900, y: 500},
@@ -50,7 +75,7 @@ var MyBox2D = Framework.Class(Framework.Level, {
 			this.walls[i].scale = 1.0;
 			this.walls[i].rotation = 0;
 		}
-		
+
 		this.floor = new wall();
 		this.floor.init('floor.png', this.box2D);
 		this.floor.position = {
@@ -74,13 +99,16 @@ var MyBox2D = Framework.Class(Framework.Level, {
 			};
 		}
 
+
+		this.box2D.weldJoint(this.walls[5].component.body, this.roofs[2].component.body);
+		this.box2D.weldJoint(this.walls[4].component.body, this.roofs[2].component.body);
+
 	},
 	
 	initialize : function () {
 		console.log('initialize function');
 
 		this.rootScene.attach(this.background);
-		this.rootScene.attach( this.angryBird.pic ); //
 		for( var i = 0; i < this.walls.length; i++ ) {
 			this.rootScene.attach( this.walls[i].pic );
 		}
@@ -90,7 +118,13 @@ var MyBox2D = Framework.Class(Framework.Level, {
 			this.rootScene.attach( this.roofs[i].pic );
 		}
 
-		//this.rootScene.attach( this.angryBird.pic ); //
+		this.rootScene.attach( this.angryBird.pic ); //
+
+		for( var i = 0; i < this.monsters.length; i++ ) {
+			this.rootScene.attach( this.monsters[i].pic );
+		}
+
+		this.rootScene.attach( this.sensor.pic );
 
 	},
 
@@ -108,6 +142,12 @@ var MyBox2D = Framework.Class(Framework.Level, {
 		for( var i = 0; i < this.roofs.length; i++ ) {
 			this.roofs[i].update();
 		}
+
+		for( var i = 0; i < this.monsters.length; i++ ) {
+			this.monsters[i].update();
+		}
+
+		this.sensor.update();
 
 		this.box2D.draw();
 

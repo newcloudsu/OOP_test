@@ -1,8 +1,7 @@
-var angryBird = function () {
+var sensor = function () {
     this.arraySize = [];
     this.component;
-    this.mbox2D;
-    
+
     Object.defineProperty(this, 'position', {
         get : function () {
             this.component.position;
@@ -39,28 +38,24 @@ var angryBird = function () {
         },
     });
 
+    var mSensor = this;
+    this.contactCallBack = function(bodyB, force){
+        if(bodyB.m_userData === "angryBird"){
+        bodyB.m_linearVelocity.x += 10;
+        }
+    }
+
     this.init = function (sprite, box2D) {
-        console.log('angry init func');
-        this.mbox2D = box2D;
         this.pic = new Framework.Sprite(define.imagePath + sprite);
-        this.component = new Framework.circleComponent(this.pic, box2D.bodyType_Dynamic, box2D); // bodyType_Dynamic
-        console.log('angry init func end');
+        this.component = new Framework.squareComponent(this.pic, box2D.bodyType_Static, box2D);
+        this.component.registerContact(this.contactCallBack);
         this.component.fixtureDef.m_restitution = 0;
-        this.component.Body.m_userData = "angryBird";
-        
     };
 
     this.update = function () {
         this.component.update();
     };
-
     this.draw = function () {
         this.pic.draw();
-    };
-
-    this.shoot = function (angle) {
-        var degrees = angle-90;
-        var power = 4000;
-        this.component.Body.ApplyForce(new this.mbox2D.b2Vec2(Math.cos(degrees * (Math.PI / 180)) * power, Math.sin(degrees * (Math.PI / 180)) * power), this.component.Body.GetWorldCenter());
     };
 }

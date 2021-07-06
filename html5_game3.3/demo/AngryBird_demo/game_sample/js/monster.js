@@ -1,8 +1,9 @@
-var angryBird = function () {
+var monster = function () {
     this.arraySize = [];
     this.component;
     this.mbox2D;
-    
+    this.isDead = false;
+
     Object.defineProperty(this, 'position', {
         get : function () {
             this.component.position;
@@ -39,28 +40,34 @@ var angryBird = function () {
         },
     });
 
+    var mMonster = this;
+    this.contactCallBack = function(bodyB, force){
+        if(Math.abs(force) > 5){
+            mMonster.dead();
+        }
+    }
     this.init = function (sprite, box2D) {
-        console.log('angry init func');
         this.mbox2D = box2D;
         this.pic = new Framework.Sprite(define.imagePath + sprite);
-        this.component = new Framework.circleComponent(this.pic, box2D.bodyType_Dynamic, box2D); // bodyType_Dynamic
-        console.log('angry init func end');
+        this.component = new Framework.squareComponent(this.pic, box2D.bodyType_Dynamic, box2D);
         this.component.fixtureDef.m_restitution = 0;
-        this.component.Body.m_userData = "angryBird";
-        
+        this.component.registerContact(this.contactCallBack);
+        this.component.Body.m_userData = "monster";
     };
 
     this.update = function () {
         this.component.update();
+        if(this.isDead){
+            this.mbox2D.world.DestroyBody(this.component.Body);
+        }
     };
 
     this.draw = function () {
         this.pic.draw();
     };
 
-    this.shoot = function (angle) {
-        var degrees = angle-90;
-        var power = 4000;
-        this.component.Body.ApplyForce(new this.mbox2D.b2Vec2(Math.cos(degrees * (Math.PI / 180)) * power, Math.sin(degrees * (Math.PI / 180)) * power), this.component.Body.GetWorldCenter());
-    };
+    this.dead = function(){
+        this.mbox2D.world.DestroyBody(this.component.Body);
+        this.isDead = true;
+    }
 }
